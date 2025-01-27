@@ -6,7 +6,7 @@ import DesignType from "./_components/DesignType";
 import AdditionalInformation from "./_components/AdditionalInformation";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { storage } from "@/appwrite.config";
+import { storage } from "@/lib/appwrite.config";
 import { v4 as uuidv4 } from 'uuid';
 import { useUser } from '@clerk/clerk-react'; // Import Clerk's useUser hook
 import { Permission, Role } from "appwrite";

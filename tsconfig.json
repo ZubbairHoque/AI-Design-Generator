@@ -38,7 +38,9 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.js",
-    "**/*.jsx"
+    "**/*.jsx",
+    "src/**/*.svelte",
+    "src/**/*.js"
   ],
   "exclude": [
     "node_modules"
