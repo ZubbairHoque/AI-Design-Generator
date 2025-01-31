@@ -6,11 +6,7 @@ import DesignType from "./_components/DesignType";
 import AdditionalInformation from "./_components/AdditionalInformation";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { storage, account } from "@/lib/appwrite.config";
-import { v4 as uuidv4 } from 'uuid';
 import { useUser } from '@clerk/clerk-react'; // Import Clerk's useUser hook
-import { Permission, Role } from "appwrite";
-import useSyncAppwriteSession from "@/app/hooks/useSyncAppwriteSession"; // Import the hook
 
 function CreateNew() {
   const { user } = useUser(); // Get the authenticated user from Clerk
@@ -18,21 +14,7 @@ function CreateNew() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isVerified, setIsVerified] = useState(false);
 
-  useSyncAppwriteSession(); // Use the hook to sync the session
-
-  useEffect(() => {
-    const checkVerification = async () => {
-      try {
-        const response = await account.get();
-        setIsVerified(response.emailVerification);
-      } catch (error) {
-        console.error("Error checking verification status:", error);
-      }
-    };
-
-    checkVerification();
-  }, []);
-
+  
   const onHandleInputChange = (value, fieldName) => {
     console.log(`Field: ${fieldName}, Value: ${value}`);
     setFormData(prev => ({
@@ -50,33 +32,9 @@ function CreateNew() {
     } catch (error) {
       console.error("Error generating AI image:", error);
     }
-    const downloadUrl = await SaveImageToAppwrite(selectedFile);
   }
 
-  const SaveImageToAppwrite = async (file) => {
-    if (!isVerified) {
-      console.error("User is not verified");
-      return;
-    }
-
-    try {
-      const response = await storage.createFile(
-        process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID,
-        uuidv4(),
-        file,
-        [
-          Permission.read(Role.any(user.id)), // Allow the user to read the file
-          Permission.write(Role.any(user.id)), // Allow the user to write the file
-          Permission.delete(Role.any(user.id)) // Allow the user to delete the file
-        ]
-      );
-      console.log(response); // Success
-      return response;
-    } catch (error) {
-      console.error("Error saving image to Appwrite:", error);
-    }
-  }
-
+  
   return (
     <div>
       <h2 className="font-bold text-5xl text-primary text-center">
