@@ -2,6 +2,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { Roboto } from 'next/font/google';
 import Provider from "./provider";
+import { ConvexClientProvider } from "./ConvexClientProvider";
 
 
 
@@ -26,7 +27,7 @@ export default function RootLayout({ children }) {
       
         <Provider>
 
-          {children}
+          <ConvexClientProvider>{children}</ConvexClientProvider>
 
         </Provider>
 

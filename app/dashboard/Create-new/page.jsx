@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ImageSelection from "./_components/ImageSelection";
 import RoomType from "./_components/RoomType";
 import DesignType from "./_components/DesignType";
@@ -7,14 +7,17 @@ import AdditionalInformation from "./_components/AdditionalInformation";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useUser } from '@clerk/clerk-react'; // Import Clerk's useUser hook
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 function CreateNew() {
   const { user } = useUser(); // Get the authenticated user from Clerk
   const [formData, setFormData] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [isVerified, setIsVerified] = useState(false);
 
-  
+  const generateUploadUrl = useMutation(api.files.generateUploadUrl);
+  const sendImage = useMutation(api.files.sendImage);
+
   const onHandleInputChange = (value, fieldName) => {
     console.log(`Field: ${fieldName}, Value: ${value}`);
     setFormData(prev => ({
@@ -26,15 +29,33 @@ function CreateNew() {
   };
 
   const GenerateAiImage = async () => {
+    if (!selectedFile) {
+      console.error("No file selected");
+      return;
+    }
+
     try {
-      const result = await axios.post('/api/redesign-room', formData);
-      console.log(result.data);
+      // Upload the file to Convex storage
+      const { url, storageId } = await generateUploadUrl();
+      await axios.put(url, selectedFile, {
+        headers: {
+          "Content-Type": selectedFile.type,
+        },
+      });
+
+      // Save the file information in the database
+      await sendImage({ storageId, author: user.id });
+
+      console.log("File uploaded and saved successfully");
+
+      // Placeholder for AI image generation API call
+      // const result = await axios.post('/api/redesign-room', formData);
+      // console.log(result.data);
     } catch (error) {
       console.error("Error generating AI image:", error);
     }
-  }
+  };
 
-  
   return (
     <div>
       <h2 className="font-bold text-5xl text-primary text-center">
