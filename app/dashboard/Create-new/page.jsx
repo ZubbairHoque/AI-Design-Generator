@@ -18,6 +18,11 @@ function CreateNew() {
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
   const sendImage = useMutation(api.files.sendImage);
 
+  const GenerateAiImage = async () => {
+    const result = await axios.post('/api/redesign-room', formData)
+    console.log(result);
+  };
+
   const onHandleInputChange = (value, fieldName) => {
     console.log(`Field: ${fieldName}, Value: ${value}`);
     setFormData(prev => ({
@@ -28,33 +33,15 @@ function CreateNew() {
     // Add logic to handle the value change, e.g., update state
   };
 
-  const GenerateAiImage = async () => {
-    if (!selectedFile) {
-      console.error("No file selected");
-      return;
-    }
-
-    try {
-      // Upload the file to Convex storage
-      const { url, storageId } = await generateUploadUrl();
-      await axios.put(url, selectedFile, {
-        headers: {
-          "Content-Type": selectedFile.type,
-        },
-      });
-
-      // Save the file information in the database
-      await sendImage({ storageId, author: user.id });
-
-      console.log("File uploaded and saved successfully");
-
-      // Placeholder for AI image generation API call
-      // const result = await axios.post('/api/redesign-room', formData);
-      // console.log(result.data);
-    } catch (error) {
-      console.error("Error generating AI image:", error);
-    }
-  };
+  const SaveFilesToConvex = async () => {
+    const uploadUrl = await generateUploadUrl();
+    const response = await sendImage({
+      url: uploadUrl.uploadUrl,
+      file: selectedFile
+    });
+    console.log(response);
+    return response;
+  }
 
   return (
     <div>
