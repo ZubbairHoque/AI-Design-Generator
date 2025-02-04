@@ -34,14 +34,30 @@ function CreateNew() {
   };
 
   const SaveFilesToConvex = async () => {
-    const uploadUrl = await generateUploadUrl();
-    const response = await sendImage({
-      url: uploadUrl.uploadUrl,
-      file: selectedFile
-    });
-    console.log(response);
-    return response;
-  }
+    try {
+      // Step 1: Generate Upload URL
+      const uploadUrl = await generateUploadUrl();
+  
+      // Step 2: Upload the file to Convex Storage
+      await axios.put(uploadUrl, selectedFile, {
+        headers: {
+          "Content-Type": selectedFile.type,
+        },
+      });
+  
+      // Step 3: Save the file record in Convex Database
+      const response = await sendImage({
+        storageId: uploadUrl.storageId, // Use the correct storageId
+        author: user.id, // Pass the user ID as author
+      });
+  
+      console.log("File uploaded successfully:", response);
+      return response;
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+  
 
   return (
     <div>
