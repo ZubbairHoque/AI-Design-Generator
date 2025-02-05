@@ -1,5 +1,3 @@
-
-
 import { v } from 'convex/values';
 import { mutation } from './_generated/server'
 
@@ -10,8 +8,8 @@ export const createFile = mutation({
   },
   async handler(ctx, args){
     await ctx.db.insert('files', {
-      storageId: 'someStorageId', // replace with actual storage ID
-      author: 'someAuthor', // replace with actual author
-    })
+      storageId: args.storageId,
+      author: args.author,
+    });
   },
 });

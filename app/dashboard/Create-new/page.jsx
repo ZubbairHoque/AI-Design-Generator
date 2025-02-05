@@ -33,30 +33,7 @@ function CreateNew() {
     // Add logic to handle the value change, e.g., update state
   };
 
-  const SaveFilesToConvex = async () => {
-    try {
-      // Step 1: Generate Upload URL
-      const uploadUrl = await generateUploadUrl();
   
-      // Step 2: Upload the file to Convex Storage
-      await axios.put(uploadUrl, selectedFile, {
-        headers: {
-          "Content-Type": selectedFile.type,
-        },
-      });
-  
-      // Step 3: Save the file record in Convex Database
-      const response = await sendImage({
-        storageId: uploadUrl.storageId, // Use the correct storageId
-        author: user.id, // Pass the user ID as author
-      });
-  
-      console.log("File uploaded successfully:", response);
-      return response;
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    }
-  };
   
 
   return (
