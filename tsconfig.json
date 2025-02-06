@@ -41,7 +41,7 @@
     "**/*.jsx",
     "src/**/*.svelte",
     "src/**/*.js"
-  ],
+, "app/ConvexClientProvider.tsx"  ],
   "exclude": [
     "node_modules"
   ]

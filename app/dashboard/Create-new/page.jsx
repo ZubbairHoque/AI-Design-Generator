@@ -7,16 +7,12 @@ import AdditionalInformation from "./_components/AdditionalInformation";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useUser } from '@clerk/clerk-react'; // Import Clerk's useUser hook
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { createFile } from "@/convex/files";
 
 function CreateNew() {
   const { user } = useUser(); // Get the authenticated user from Clerk
   const [formData, setFormData] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
-
-  const generateUploadUrl = useMutation(api.files.generateUploadUrl);
-  const sendImage = useMutation(api.files.sendImage);
 
   const GenerateAiImage = async () => {
     const result = await axios.post('/api/redesign-room', formData)
@@ -33,7 +29,12 @@ function CreateNew() {
     // Add logic to handle the value change, e.g., update state
   };
 
-  
+  const SaveFileToConvex = async (file) => {
+    createFile({
+      storageID: user.id,
+      file: file,
+    })
+  };
   
 
   return (
